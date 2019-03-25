@@ -82,11 +82,13 @@ def normalize_mfcc(mfcc, filter_banks, cep_lifter = 100):
     mfcc -= (np.mean(mfcc, axis=0)) # + 1e-8)
     return mfcc
 
-def plot_spectrogram(spectrogram, title):
+def plot_spectrogram(spectrogram, title, x_label, y_label):
     ''' Plot spectrogram '''
     plt.figure(figsize=(12, 5))
     plt.title(title)
     plt.imshow(spectrogram.T, cmap=plt.cm.jet, aspect='auto')
     plt.xticks(np.arange(0, (spectrogram.T).shape[1], int((spectrogram.T).shape[1] / 4)))
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
     ax = plt.gca()
     ax.invert_yaxis()
