@@ -3,6 +3,7 @@ from python_speech_features import logfbank
 from python_speech_features import delta
 import scipy.io.wavfile as wav
 import sox
+import numpy as np
 
 def get_features(source, destination, n_delta=1, numcep=13):
     '''' Transform original sound file and calculate features. '''
