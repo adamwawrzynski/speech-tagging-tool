@@ -13,8 +13,8 @@ def get_features(source, destination, n_delta=1, numcep=13):
 
     # calulate features
     rate,sig = wav.read(destination)
-    mfcc_feat = mfcc(sig, rate)
-    fbank_feat = logfbank(sig, rate, numcep=numcep)
+    mfcc_feat = mfcc(sig, rate, numcep=numcep)
+    fbank_feat = logfbank(sig, rate)
     if n_delta >= 1:
         d_mfcc_feat = delta(mfcc_feat, 2)
     if n_delta == 2:
