@@ -1,24 +1,42 @@
-import sys
+import argparse
 
-if(len(sys.argv) < 2):
-    print("Error!")
-    print("No parameter passed!")
-    print("Type -h option to see man.")
-    exit
-else:
-    if(len(sys.argv) >= 2 and len(sys.argv) <= 4):
-        if(sys.argv[1] == '-h'):
-            print("{} man".format(sys.argv[0]))
-            print("{} <option> <input_file> <output_file>\n".format(sys.argv[0]))
-            print("<option>\t-\tdefines whether to return phonemes (-P) or words (-W) tagging")
-            print("<input_file>\t-\tpath to sound file")
-            print("<output_file>\t-\tpath to output file")
-            print("-h\t\t-\thelp")
-            exit
-        else:
-            print(sys.argv[1])
-    else:
-        print("Error!")
-        print("Too many arguments passed!")
-        print("Type -h option to see man.")
-        exit
+# initiate the parser
+parser = argparse.ArgumentParser()
+
+# add long and short argument
+parser.add_argument("--source",
+                    "-s",
+                    help="path to sound file",
+                    dest="source",
+                    required=True)
+parser.add_argument("--dest",
+                    "-d",
+                    help="path to destination file",
+                    dest="destination",
+                    required=True)
+parser.add_argument("--option",
+                    "-o",
+                    help="defines whether to return phonemes (-P) or words (-W) tagging",
+                    dest="option",
+                    default='-P',
+                    required=False)
+parser.add_argument("--frame_width",
+                    "-w",
+                    help="defines width of window in milliseconds",
+                    dest="frame_width",
+                    default='25',
+                    required=False)
+parser.add_argument("--frame_imposition",
+                    "-i",
+                    help="defines width of window impositions on both sides in milliseconds",
+                    dest="frame_imposition",
+                    default='10',
+                    required=False)
+parser.add_argument("--framing_function",
+                    "-f", help="defines framing function",
+                    dest="framing_function",
+                    default='hamming',
+                    required=False)
+
+# read arguments from the command line
+args = parser.parse_args()
