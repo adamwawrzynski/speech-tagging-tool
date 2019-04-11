@@ -72,7 +72,8 @@ def calculate_features(source, destination, n_delta=1, numcep=13, winfunc=np.ham
 
 
 def convert_phonemes_to_number(dataset, phonemes):
-    ''' Replace phonemes with correspoding number from feasible phonemes dictionary. '''
+    ''' Replace phonemes with correspoding number from feasible phonemes
+    dictionary. '''
     for i in dataset:
             i[2] = phonemes[i[2]]
     return dataset
@@ -107,15 +108,16 @@ def get_samples(path, feasible_phonemes):
         # get list of directories
         files = os.listdir(path)
         files.sort()
+        sample_name = "sample.wav"
 
         # if path points to directory do recursive call
         if(os.path.isdir(path + '/' + filename)):
-            sample = extract_dataset(path + '/' + filename, feasible_phonemes)
+            sample = get_samples(path + '/' + filename, feasible_phonemes)
 
-        sample_name = "sample.wav"
         # otherwise process files inside directory
         else:
-            features = calculate_features(path + '/' + filename + ".WAV", sample_name)
+            features = calculate_features(path + '/' + filename + ".WAV",
+                                            sample_name)
             os.remove(sample_name)
             sample.set_features(features)
             tmp = get_phonemes_from_file(path + '/' + filename + ".PHN")
@@ -124,21 +126,16 @@ def get_samples(path, feasible_phonemes):
             tmp = convert_phonemes_to_number(tmp, feasible_phonemes)
 
             # calculate frames of phonemes
-            phonemes = np.asarray(get_framing_phonemes(tmp, sample.features), dtype=int)
+            phonemes = np.asarray(get_framing_phonemes(tmp, sample.features),
+                                    dtype=int)
 
             # remove excessive phoneme
             phonemes = phonemes[:features.shape[0]]
 
-            # create array of one hot vectors respresenting phoneme
-            one_hot_vector = np.zeros((phonemes.shape[0], 61), dtype=int)
-            for i in range(0, len(phonemes)-1):
-                one_hot_vector[i] = np.eye(61)[phonemes[i]]
-
-            sample.set_phonemes(one_hot_vector)
+            sample.set_phonemes(phonemes)
 
         # add processed sample to dataset
         dataset = np.append(dataset, sample)
-
     # remove excessive first row
     dataset = dataset[1:]
     return dataset
