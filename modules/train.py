@@ -3,6 +3,7 @@ import audio_processing as ap
 import os
 import models as md
 import numpy as np
+import random
 from keras.models import load_model
 from time import time
 from keras.callbacks import TensorBoard
@@ -21,12 +22,30 @@ def decode_batch(result):
 
 
 def evaluate_predictions(y_true, y_pred):
-        ''' Accumulate wrong predictions. '''
-        counter = 0
+        ''' Return percent of correct predictions. '''
+        counter = 0.0
         for i in range(y_true.shape[0]):
-                if(y_true[i] != y_pred[i]):
+                if(y_true[i] == y_pred[i]):
                         counter = counter + 1
-        return counter
+        return (counter*100)/y_true.shape[0]
+
+
+def create_transcription(prediction, window_width=20):
+        old = None
+        start = 0
+        stop = 0
+        for i in range(0, len(prediction)):
+                if old == prediction[i]:
+                        stop += window_width
+                elif old is None:
+                        old = prediction[i]
+                        start = i*window_width
+                        stop = start
+                else:
+                        print("{}:\t{}ms\t{}ms".format(old, start, stop))
+                        start = stop = 0
+                        old = None
+        print("{}:\t{}ms\t{}ms".format(old, start, stop))
 
 
 def train_model(name,
@@ -43,7 +62,15 @@ def train_model(name,
         dataset = ap.get_dataset(alphabet_path, dataset_path)
 
         # load model
-        model, test_func = md.custom_ctc_lstm()
+        model, test_func = md.custom_ctc_cnn_lstm2_simple()
+
+        # load model to retrain
+        if restore == True:
+                if os.path.isfile(weights_filename):
+                        model.load_weights(weights_filename)
+                        print("Model weights loaded from disk")
+                else:
+                        print("Model weights not found")
 
         # run tensorboard logger
         tb = TensorBoard(log_dir="logs/" + name)
@@ -71,15 +98,9 @@ def train_model(name,
         input_length = np.ones((1, 1))
         label_length = np.ones((1, 1))
 
-        # load model to retrain
-        if restore == True:
-                if os.path.isfile(weights_filename):
-                        model.load_weights(weights_filename)
-                        print("Model weights loaded from disk")
-                else:
-                        print("Model weights not found")
-
         for i in range(0, epochs):
+
+                random.shuffle(train_dataset)
 
                 # dictionary is to store dataset, because of its variable length
                 for k in train_dataset:
@@ -118,15 +139,70 @@ def train_model(name,
                         print("Predicted: \t{}".format(out))
                         print("Actual: \t{}".format(y_test))
 
-                wrong_predictions = evaluate_predictions(y_test, out)
-                print("Wrong predictions: {}/{}".format(wrong_predictions, len(out)))
+                predictions = evaluate_predictions(y_test, out)
+                print("Correct predictions: {}%".format(round(predictions, 2)))
 
         model.save_weights(weights_filename)
         print("Model weights saved to disk")
 
+
+def evaluate_model(name,
+                alphabet_path,
+                dataset_path,
+                verbose=False):
+
+        weights_filename = name + ".hd5"
+
+        # load alphabet and dataset from given paths
+        dataset = ap.get_dataset(alphabet_path, dataset_path)
+        phonemes = ap.get_feasible_phonemes(alphabet_path)
+        # load model
+        model, test_func = md.custom_ctc_cnn_lstm2_simple()
+
+        # load model to retrain
+        if os.path.isfile(weights_filename):
+                model.load_weights(weights_filename)
+                print("Model weights loaded from disk")
+        else:
+                print("Model weights not found")
+                exit()
+
+        accumulate = 0
+        for i in range(0, len(dataset)):
+                # get one sample of test dataset to validate model
+                # model expects input data with shape: [batch_size, timesteps, features]
+                # in our case it is 1 element of batch, variable length and 26 MFCC features
+                X_test = dataset[i].features
+                X_test = X_test.reshape(1, X_test.shape[0], X_test.shape[1])
+                y_test = dataset[i].phonemes
+
+                # predict sequence
+                # it returns matrix of occurance probability for each phoneme
+                result = test_func([X_test])
+
+                # now we choose the biggest probability for each timestep
+                out = decode_batch(result[0])
+                out = np.asarray(out, dtype=int)
+
+                # print results
+                if verbose == True:
+                        print("Predicted: \t{}".format(out))
+                        print("Actual: \t{}".format(y_test))
+
+                predictions = evaluate_predictions(y_test, out)
+                out = ap.convert_number_to_phoneme(out, phonemes)
+                create_transcription(out)
+                accumulate = accumulate + predictions
+        print("Correct predictions: {}%".format(round(accumulate/len(dataset), 2)))
+
+
 if __name__ == "__main__":
-        train_model(name="custom_ctc_lstm",
-                        epochs=5,
-                        alphabet_path="../data/phonemes.txt",
-                        dataset_path="/home/adam/Downloads/TIMIT/TRAIN/DR1/FCJF0",
-                        restore=True)
+#        train_model(name="custom_ctc_cnn_lstm2_simple",
+#                        epochs=5,
+#                        alphabet_path="../data_simple/phonemes.txt",
+#                        dataset_path="/home/adam/Downloads/TIMIT_simple/TRAIN",
+#                        restore=True,
+#                        tensorboard=True)
+         evaluate_model(name="custom_ctc_cnn_lstm2_simple",
+                         alphabet_path="../data_simple/phonemes.txt",
+                         dataset_path="/home/adam/Downloads/TIMIT_simple/TRAIN/DR1/FCJF0")

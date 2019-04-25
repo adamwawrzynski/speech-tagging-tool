@@ -79,6 +79,16 @@ def convert_phonemes_to_number(dataset, phonemes):
     return dataset
 
 
+def convert_number_to_phoneme(prediction, phonemes):
+    ''' Replace number of correspoding phoneme with phoneme. '''
+    result = []
+    for i in range(0, len(prediction)):
+        for name in phonemes.items():
+            if name[1] == prediction[i]:
+                result.append(name[0])
+    return result
+
+
 def get_framing_phonemes(dataset, features):
     ''' Calculate phoneme of each sound signal frame. '''
     tmp_dataset = []
