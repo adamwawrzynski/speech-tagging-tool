@@ -14,8 +14,8 @@ neural network's speech-to-phoneme engine.
 ## Architecture
 
 System is based on recurrent neural networks with connectionist temporal
-classification (CTC) loss function. As an input networks gets 26 features MFCC +
-deltas obtained from audio file.
+classification (CTC) loss function. As an input networks gets 26 features (MFCC +
+deltas) obtained from audio file.
 
 ## Dataset
 
