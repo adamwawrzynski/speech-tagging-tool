@@ -133,7 +133,6 @@ def get_samples(path, feasible_phonemes):
         # get list of directories
         files = os.listdir(path)
         files.sort()
-        sample_name = "sample.wav"
 
         # if path points to directory do recursive call
         if(os.path.isdir(path + '/' + filename)):

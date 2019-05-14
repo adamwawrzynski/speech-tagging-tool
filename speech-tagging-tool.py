@@ -63,12 +63,12 @@ else:
 # load model
 model, test_func = model.custom_ctc_cnn_lstm2()
 
-train.predict_model(name="custom_ctc_cnn_lstm2",
+train.predict_model(name="modules/custom_ctc_cnn_lstm2",
         model=model,
         test_func=test_func,
         audio_path=args.source,
         transcription_path=args.destination,
-        alphabet_path="../data/phonemes.txt",
+        alphabet_path="data/phonemes.txt",
         framing_function=args.framing_function,
         frame_width=args.frame_width,
         frame_imposition=args.frame_imposition,
