@@ -70,6 +70,7 @@ def process_audio(source,
 
     mfcc_feat = mfcc(sig, 
                     rate, 
+                    nfft=2048,
                     numcep=numcep, 
                     winlen=frame_width,
                     winstep=frame_imposition, 

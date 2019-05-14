@@ -30,7 +30,7 @@ def evaluate_predictions(y_true, y_pred):
         return (counter*100)/y_true.shape[0]
 
 
-def create_transcription(prediction, path, window_width=20, verbose=False):
+def create_transcription(prediction, path, window_width=25, verbose=False):
         old = None
         start = 0
         stop = 0
@@ -238,9 +238,8 @@ def predict_model(name,
         result = decode_batch(result[0])
         result = np.asarray(result, dtype=int)
 
-        print(audio.shape)
         result = ap.convert_number_to_phoneme(result, phonemes)
-        create_transcription(result, transcription_path, window_width=int(frame_width*1000), verbose=verbose)
+        create_transcription(result, transcription_path, window_width=25, verbose=verbose)
 
 
 if __name__ == "__main__":
