@@ -49,7 +49,12 @@ def get_phonemes_from_file(path):
     return values
 
 
-def process_audio(source, n_delta=1, numcep=13, winfunc=np.hamming):
+def process_audio(source, 
+        n_delta=1, 
+        numcep=13, 
+        frame_width=0.025, 
+        frame_imposition=0.01,
+        framing_function=np.hamming):
     '''' Transform sound file and calculate MFCC features. '''
     destination = 'tmp.wav'
 
@@ -63,7 +68,12 @@ def process_audio(source, n_delta=1, numcep=13, winfunc=np.hamming):
 
     os.remove(destination)
 
-    mfcc_feat = mfcc(sig, rate, numcep=numcep, winfunc=winfunc)
+    mfcc_feat = mfcc(sig, 
+                    rate, 
+                    numcep=numcep, 
+                    winlen=frame_width,
+                    winstep=frame_imposition, 
+                    winfunc=framing_function)
 
     if n_delta >= 1:
         d_mfcc_feat = delta(mfcc_feat, 2)

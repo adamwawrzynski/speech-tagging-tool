@@ -207,6 +207,9 @@ def predict_model(name,
                 audio_path,
                 transcription_path,
                 alphabet_path,
+                frame_width=0.025, 
+                framing_function=np.hamming,
+                frame_imposition=0.01,
                 verbose=False):
 
         weights_filename = name + ".hd5"
@@ -221,7 +224,10 @@ def predict_model(name,
                 print("Model weights not found")
                 exit()
 
-        audio = ap.process_audio(audio_path)
+        audio = ap.process_audio(audio_path, 
+                        frame_width=frame_width, 
+                        frame_imposition=frame_imposition,
+                        framing_function=framing_function)
         audio = audio.reshape(1, audio.shape[0], audio.shape[1])
 
         # predict sequence
@@ -233,18 +239,12 @@ def predict_model(name,
         result = np.asarray(result, dtype=int)
 
         result = ap.convert_number_to_phoneme(result, phonemes)
-        create_transcription(result, transcription_path, verbose=verbose)
+        create_transcription(result, transcription_path, window_width=20, verbose=verbose)
 
 
 if __name__ == "__main__":
         # load model
         model, test_func = md.custom_ctc_cnn_lstm2()
-
-        # evaluate_model(name="custom_ctc_cnn_lstm2_simple",
-        #                 model=model,
-        #                 test_func=test_func,
-        #                 alphabet_path="../data/phonemes.txt",
-        #                 dataset_path="/home/adam/Downloads/TIMIT_simple/TRAIN/DR1/FCJF0")
 
         predict_model(name="custom_ctc_cnn_lstm2",
                 model=model,
