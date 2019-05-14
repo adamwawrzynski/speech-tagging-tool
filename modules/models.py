@@ -33,7 +33,6 @@ def custom_ctc_batch_cost(y_true, y_pred, input_length, label_length,
                                        ctc_merge_repeated=ctc_merge_repeated), 1)
 
 
-
 def ctc_lambda_func(args):
     y_pred, labels, input_length, label_length = args
     return custom_ctc_batch_cost(labels, y_pred, input_length, label_length)
@@ -118,7 +117,6 @@ def custom_ctc_cnn_lstm2():
 
     #return model, model_p, test_func
     return model, test_func
-
 
 
 def custom_ctc_cnn_lstm2_simple():

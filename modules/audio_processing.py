@@ -49,8 +49,10 @@ def get_phonemes_from_file(path):
     return values
 
 
-def calculate_features(source, destination, n_delta=1, numcep=13, winfunc=np.hamming):
+def process_audio(source, n_delta=1, numcep=13, winfunc=np.hamming):
     '''' Transform sound file and calculate MFCC features. '''
+    destination = 'tmp.wav'
+
     # transform original file
     tfm = sox.Transformer()
     tfm.set_output_format(rate=16000)
@@ -58,6 +60,9 @@ def calculate_features(source, destination, n_delta=1, numcep=13, winfunc=np.ham
     
     # calulate features
     rate,sig = wav.read(destination)
+
+    os.remove(destination)
+
     mfcc_feat = mfcc(sig, rate, numcep=numcep, winfunc=winfunc)
 
     if n_delta >= 1:
@@ -126,9 +131,8 @@ def get_samples(path, feasible_phonemes):
 
         # otherwise process files inside directory
         else:
-            features = calculate_features(path + '/' + filename + ".WAV",
-                                            sample_name)
-            os.remove(sample_name)
+            features = process_audio(path + '/' + filename + ".WAV")
+
             sample.set_features(features)
             tmp = get_phonemes_from_file(path + '/' + filename + ".PHN")
 

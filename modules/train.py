@@ -30,25 +30,34 @@ def evaluate_predictions(y_true, y_pred):
         return (counter*100)/y_true.shape[0]
 
 
-def create_transcription(prediction, window_width=20):
+def create_transcription(prediction, path, window_width=20, verbose=False):
         old = None
         start = 0
         stop = 0
-        for i in range(0, len(prediction)):
-                if old == prediction[i]:
-                        stop += window_width
-                elif old is None:
-                        old = prediction[i]
-                        start = i*window_width
-                        stop = start
-                else:
+        with open(path, "w") as fout:
+                for i in range(0, len(prediction)):
+                        if old == prediction[i]:
+                                stop += window_width
+                        elif old is None:
+                                old = prediction[i]
+                                start = i*window_width
+                                stop = start
+                        else:
+                                if verbose == True:
+                                        print("{}:\t{}ms\t{}ms".format(old, start, stop))
+
+                                fout.write("{},{},{}\n".format(old, start, stop))
+                                start = stop = 0
+                                old = None
+                if verbose == True:
                         print("{}:\t{}ms\t{}ms".format(old, start, stop))
-                        start = stop = 0
-                        old = None
-        print("{}:\t{}ms\t{}ms".format(old, start, stop))
+
+                fout.write("{},{},{}\n".format(old, start, stop))
 
 
 def train_model(name,
+                model,
+                test_func,
                 epochs,
                 alphabet_path,
                 dataset_path,
@@ -60,9 +69,6 @@ def train_model(name,
 
         # load alphabet and dataset from given paths
         dataset = ap.get_dataset(alphabet_path, dataset_path)
-
-        # load model
-        model, test_func = md.custom_ctc_cnn_lstm2_simple()
 
         # load model to retrain
         if restore == True:
@@ -147,6 +153,8 @@ def train_model(name,
 
 
 def evaluate_model(name,
+                model,
+                test_func,
                 alphabet_path,
                 dataset_path,
                 verbose=False):
@@ -156,8 +164,6 @@ def evaluate_model(name,
         # load alphabet and dataset from given paths
         dataset = ap.get_dataset(alphabet_path, dataset_path)
         phonemes = ap.get_feasible_phonemes(alphabet_path)
-        # load model
-        model, test_func = md.custom_ctc_cnn_lstm2_simple()
 
         # load model to retrain
         if os.path.isfile(weights_filename):
@@ -191,18 +197,59 @@ def evaluate_model(name,
 
                 predictions = evaluate_predictions(y_test, out)
                 out = ap.convert_number_to_phoneme(out, phonemes)
-                create_transcription(out)
                 accumulate = accumulate + predictions
         print("Correct predictions: {}%".format(round(accumulate/len(dataset), 2)))
 
 
+def predict_model(name,
+                model,
+                test_func,
+                audio_path,
+                transcription_path,
+                alphabet_path,
+                verbose=False):
+
+        weights_filename = name + ".hd5"
+
+        phonemes = ap.get_feasible_phonemes(alphabet_path)
+
+        # load model weights
+        if os.path.isfile(weights_filename):
+                model.load_weights(weights_filename)
+                print("Model weights loaded from disk")
+        else:
+                print("Model weights not found")
+                exit()
+
+        audio = ap.process_audio(audio_path)
+        audio = audio.reshape(1, audio.shape[0], audio.shape[1])
+
+        # predict sequence
+        # it returns matrix of occurance probability for each phoneme
+        result = test_func([audio])
+
+        # now we choose the biggest probability for each timestep
+        result = decode_batch(result[0])
+        result = np.asarray(result, dtype=int)
+
+        result = ap.convert_number_to_phoneme(result, phonemes)
+        create_transcription(result, transcription_path, verbose=verbose)
+
+
 if __name__ == "__main__":
-#        train_model(name="custom_ctc_cnn_lstm2_simple",
-#                        epochs=5,
-#                        alphabet_path="../data_simple/phonemes.txt",
-#                        dataset_path="/home/adam/Downloads/TIMIT_simple/TRAIN",
-#                        restore=True,
-#                        tensorboard=True)
-         evaluate_model(name="custom_ctc_cnn_lstm2_simple",
-                         alphabet_path="../data_simple/phonemes.txt",
-                         dataset_path="/home/adam/Downloads/TIMIT_simple/TRAIN/DR1/FCJF0")
+        # load model
+        model, test_func = md.custom_ctc_cnn_lstm2()
+
+        # evaluate_model(name="custom_ctc_cnn_lstm2_simple",
+        #                 model=model,
+        #                 test_func=test_func,
+        #                 alphabet_path="../data/phonemes.txt",
+        #                 dataset_path="/home/adam/Downloads/TIMIT_simple/TRAIN/DR1/FCJF0")
+
+        predict_model(name="custom_ctc_cnn_lstm2",
+                model=model,
+                test_func=test_func,
+                audio_path="/home/adam/Downloads/TIMIT_simple/TRAIN/DR1/FCJF0/SA1.WAV",
+                transcription_path="result.txt",
+                alphabet_path="../data/phonemes.txt",
+                verbose=True)
