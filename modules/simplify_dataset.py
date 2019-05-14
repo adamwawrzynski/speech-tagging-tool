@@ -1,5 +1,7 @@
 import os
 import sys
+import argparse
+
 
 def process_file(filename):
     ''' Simplify .PHN file from 61 to 39 phonemes. '''
@@ -123,6 +125,25 @@ def simplify_dataset(path):
         else:
 	        process_file(path + '/' + filename + ".PHN")
 
+
 if __name__ == "__main__":
-    simplify_dataset(sys.argv[1])
-    simplify_phonemes_file(sys.argv[1])
+    # initiate the parser
+    parser = argparse.ArgumentParser()
+
+    # add long and short argument
+    parser.add_argument("--dataset",
+                        "-d",
+                        help="path to dataset root directory",
+                        dest="dataset",
+                        required=True)
+    parser.add_argument("--phonemes",
+                        "-p",
+                        help="path to feasible phonemes file",
+                        dest="phonemes",
+                    required=True)
+
+    # read arguments from the command line
+    args = parser.parse_args()
+
+    simplify_dataset(args.dataset)
+    simplify_phonemes_file(args.phonemes)
