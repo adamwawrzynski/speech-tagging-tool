@@ -61,10 +61,10 @@ else:
     args.framing_function = np.hamming
 
 # load model
-model, test_func = model.custom_ctc_cnn_lstm2_simple()
+model, test_func = model.best_model()
 
 train.predict_model(model=model,
-        model_weights_path="custom_ctc_cnn_lstm2_simple.hf5",
+        model_weights_path="modules/best_model.hd5",
         test_func=test_func,
         audio_path=args.source,
         transcription_path=args.destination,
