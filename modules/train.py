@@ -240,16 +240,3 @@ def predict_model(name,
 
         result = ap.convert_number_to_phoneme(result, phonemes)
         create_transcription(result, transcription_path, window_width=25, verbose=verbose)
-
-
-if __name__ == "__main__":
-        # load model
-        model, test_func = md.custom_ctc_cnn_lstm2()
-
-        predict_model(name="custom_ctc_cnn_lstm2",
-                model=model,
-                test_func=test_func,
-                audio_path="/home/adam/Downloads/TIMIT_simple/TRAIN/DR1/FCJF0/SA1.WAV",
-                transcription_path="result.txt",
-                alphabet_path="../data/phonemes.txt",
-                verbose=True)
