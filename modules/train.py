@@ -224,7 +224,7 @@ def predict_model(name,
                 print("Model weights not found")
                 exit()
 
-        audio = ap.process_audio(audio_path, 
+        audio, width = ap.process_audio(audio_path, 
                         frame_width=frame_width, 
                         frame_imposition=frame_imposition,
                         framing_function=framing_function)
@@ -239,4 +239,4 @@ def predict_model(name,
         result = np.asarray(result, dtype=int)
 
         result = ap.convert_number_to_phoneme(result, phonemes)
-        create_transcription(result, transcription_path, window_width=25, verbose=verbose)
+        create_transcription(result, transcription_path, window_width=width, verbose=verbose)

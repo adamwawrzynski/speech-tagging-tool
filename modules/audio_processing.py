@@ -84,7 +84,10 @@ def process_audio(source,
         d_mfcc_feat = np.concatenate((d_mfcc_feat, d_mfcc_feat2), axis=1)
         
     complete_mfcc = np.concatenate((mfcc_feat, d_mfcc_feat), axis=1)
-    return complete_mfcc
+
+    frame_width = len(sig)/len(complete_mfcc)
+
+    return complete_mfcc, frame_width
 
 
 def convert_phonemes_to_number(dataset, phonemes):
@@ -141,7 +144,7 @@ def get_samples(path, feasible_phonemes):
 
         # otherwise process files inside directory
         else:
-            features = process_audio(path + '/' + filename + ".WAV")
+            features, _ = process_audio(path + '/' + filename + ".WAV")
 
             sample.set_features(features)
             tmp = get_phonemes_from_file(path + '/' + filename + ".PHN")
