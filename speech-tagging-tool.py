@@ -63,8 +63,8 @@ else:
 # load model
 model, test_func = model.custom_ctc_cnn_lstm2_simple()
 
-train.predict_model(name="modules/custom_ctc_cnn_lstm2_simple",
-        model=model,
+train.predict_model(model=model,
+        model_weights_path="custom_ctc_cnn_lstm2_simple.hf5",
         test_func=test_func,
         audio_path=args.source,
         transcription_path=args.destination,

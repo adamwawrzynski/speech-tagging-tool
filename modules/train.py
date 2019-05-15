@@ -57,6 +57,7 @@ def create_transcription(prediction, path, window_width=25, verbose=False):
 
 def train_model(name,
                 model,
+                model_weights_path,
                 test_func,
                 epochs,
                 alphabet_path,
@@ -65,15 +66,13 @@ def train_model(name,
                 tensorboard=False,
                 verbose=False):
 
-        weights_filename = name + ".hd5"
-
         # load alphabet and dataset from given paths
         dataset = ap.get_dataset(alphabet_path, dataset_path)
 
         # load model to retrain
         if restore == True:
-                if os.path.isfile(weights_filename):
-                        model.load_weights(weights_filename)
+                if os.path.isfile(model_weights_path):
+                        model.load_weights(model_weights_path)
                         print("Model weights loaded from disk")
                 else:
                         print("Model weights not found")
@@ -148,26 +147,24 @@ def train_model(name,
                 predictions = evaluate_predictions(y_test, out)
                 print("Correct predictions: {}%".format(round(predictions, 2)))
 
-        model.save_weights(weights_filename)
+        model.save_weights(model_weights_path)
         print("Model weights saved to disk")
 
 
-def evaluate_model(name,
-                model,
+def evaluate_model(model,
+                model_weights_path,
                 test_func,
                 alphabet_path,
                 dataset_path,
                 verbose=False):
-
-        weights_filename = name + ".hd5"
 
         # load alphabet and dataset from given paths
         dataset = ap.get_dataset(alphabet_path, dataset_path)
         phonemes = ap.get_feasible_phonemes(alphabet_path)
 
         # load model to retrain
-        if os.path.isfile(weights_filename):
-                model.load_weights(weights_filename)
+        if os.path.isfile(model_weights_path):
+                model.load_weights(model_weights_path)
                 print("Model weights loaded from disk")
         else:
                 print("Model weights not found")
@@ -201,8 +198,8 @@ def evaluate_model(name,
         print("Correct predictions: {}%".format(round(accumulate/len(dataset), 2)))
 
 
-def predict_model(name,
-                model,
+def predict_model(model,
+                model_weights_path,
                 test_func,
                 audio_path,
                 transcription_path,
@@ -212,13 +209,11 @@ def predict_model(name,
                 frame_imposition=0.01,
                 verbose=False):
 
-        weights_filename = name + ".hd5"
-
         phonemes = ap.get_feasible_phonemes(alphabet_path)
 
         # load model weights
-        if os.path.isfile(weights_filename):
-                model.load_weights(weights_filename)
+        if os.path.isfile(model_weights_path):
+                model.load_weights(model_weights_path)
                 print("Model weights loaded from disk")
         else:
                 print("Model weights not found")
