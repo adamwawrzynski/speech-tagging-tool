@@ -60,8 +60,6 @@ def best_model():
     x = Dropout(0.1, name='dropout_5')(x)
     y_pred = TimeDistributed(Dense(39 + 1, activation='softmax'))(x)
 
-    # Model(inputs=input_data, outputs=y_pred).summary()
-
     labels = Input(name='the_labels', shape=[None,], dtype='int32')
     input_length = Input(name='input_length', shape=[1], dtype='int32')
     label_length = Input(name='label_length', shape=[1], dtype='int32')
@@ -75,6 +73,8 @@ def best_model():
 
     model = Model(inputs=[input_data, labels, input_length, label_length],
                   outputs=loss_out)
+
+    model.summary()
 
     # captures output of softmax so we can decode the output during
     # visualization
