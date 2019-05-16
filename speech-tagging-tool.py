@@ -4,6 +4,19 @@ import numpy as np
 import modules.train as train
 import modules.models as model
 import modules.audio_processing as ap
+import os
+
+def CheckExt(choices):
+    class Act(argparse.Action):
+        def __call__(self,parser,namespace,fname,option_string=None):
+            ext = os.path.splitext(fname)[1][1:]
+            if ext not in choices:
+                option_string = '({})'.format(option_string) if option_string else ''
+                parser.error("file doesn't end with one of {}{}".format(choices,option_string))
+            else:
+                setattr(namespace,self.dest,fname)
+
+    return Act
 
 # initiate the parser
 parser = argparse.ArgumentParser()
@@ -13,12 +26,14 @@ parser.add_argument("--source",
                     "-s",
                     help="path to sound file",
                     dest="source",
-                    required=True)
+                    required=True,
+                    action=CheckExt({"wav","WAV"}))
 parser.add_argument("--dest",
                     "-d",
                     help="path to destination file",
                     dest="destination",
-                    required=True)
+                    required=True,
+                    action=CheckExt({"csv"}))
 parser.add_argument("--option",
                     "-o",
                     help="defines whether to return phonemes (-P) or words (-W) tagging",
