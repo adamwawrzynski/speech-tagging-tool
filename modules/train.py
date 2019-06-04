@@ -71,7 +71,8 @@ def train_model(name,
                 verbose=False):
 
         # load alphabet and dataset from given paths
-        dataset = ap.get_dataset(alphabet_path, dataset_path)
+        # dataset = ap.get_dataset(alphabet_path, dataset_path)
+        dataset = ap.get_dataset_clarin(alphabet_path, dataset_path)
 
         # load model to retrain
         if restore == True:
@@ -163,7 +164,8 @@ def evaluate_model(model,
                 verbose=False):
 
         # load alphabet and dataset from given paths
-        dataset = ap.get_dataset(alphabet_path, dataset_path)
+        # dataset = ap.get_dataset(alphabet_path, dataset_path)
+        dataset = ap.get_dataset_clarin(alphabet_path, dataset_path)
         phonemes = ap.get_feasible_phonemes(alphabet_path)
 
         # load model to retrain
@@ -239,3 +241,48 @@ def predict_model(model,
 
         result = ap.convert_number_to_phoneme(result, phonemes)
         create_transcription(result, transcription_path, window_width=width, verbose=verbose)
+
+if __name__ == "__main__":
+    import argparse
+
+    # initiate the parser
+    parser = argparse.ArgumentParser()
+
+    # add long and short argument
+    parser.add_argument("--dataset",
+        "-d",
+        help="path to dataset root directory",
+        dest="dataset",
+        required=True)
+    parser.add_argument("--alphabet",
+        "-a",
+        help="path to alphabet",
+        dest="alphabet",
+        required=True)
+    parser.add_argument("--weights",
+        "-w",
+        help="path to weights",
+        dest="weights",
+        required=True)
+    parser.add_argument("--epochs",
+        "-e",
+        help="number of epochs",
+        dest="weights",
+        default=100,
+        required=False)
+
+    # read arguments from the command line
+    args = parser.parse_args()
+
+    model, test_func = md.best_model(38)
+
+    train_model(name="clarin",
+        model=model,
+        model_weights_path=args.weights,
+        test_func=test_func,
+        epochs=args.epochs,
+        alphabet_path=args.alphabet,
+        dataset_path=args.dataset,
+        restore=False,
+        tensorboard=False,
+        verbose=True)

@@ -38,7 +38,7 @@ def ctc_lambda_func(args):
     return ctc_batch_cost(labels, y_pred, input_length, label_length)
 
 
-def best_model():
+def best_model(num_class):
     input_data = Input(shape=(None, 26), name='input')
 
     x = Conv1D(128, 3, strides=1, padding='same', activation='relu',
@@ -58,7 +58,7 @@ def best_model():
 
     x = TimeDistributed(Dense(512, activation='relu'))(x)
     x = Dropout(0.1, name='dropout_5')(x)
-    y_pred = TimeDistributed(Dense(39 + 1, activation='softmax'))(x)
+    y_pred = TimeDistributed(Dense(num_class + 1, activation='softmax'))(x)
 
     labels = Input(name='the_labels', shape=[None,], dtype='int32')
     input_length = Input(name='input_length', shape=[1], dtype='int32')
