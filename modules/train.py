@@ -35,6 +35,10 @@ def create_transcription(prediction, path, window_width=25, verbose=False):
         start = 0
         stop = 0
         with open(path, "w") as fout:
+                if verbose == True:
+                        print("<PHONEME> <START_SAMPLE> <END_SAMPLE>")
+
+                fout.write("<PHONEME>,<START_SAMPLE>,<END_SAMPLE>\n")
                 for i in range(0, len(prediction)):
                         if old == prediction[i]:
                                 stop += window_width
@@ -44,13 +48,13 @@ def create_transcription(prediction, path, window_width=25, verbose=False):
                                 stop = start
                         else:
                                 if verbose == True:
-                                        print("{}:\t{}ms\t{}ms".format(old, start, stop))
+                                        print("{}:\t{} sample\t{} sample".format(old, start, stop))
 
                                 fout.write("{},{},{}\n".format(old, start, stop))
                                 start = stop = 0
                                 old = None
                 if verbose == True:
-                        print("{}:\t{}ms\t{}ms".format(old, start, stop))
+                        print("{}:\t{} sample\t{} sample".format(old, start, stop))
 
                 fout.write("{},{},{}\n".format(old, start, stop))
 
