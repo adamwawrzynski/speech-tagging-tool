@@ -267,7 +267,7 @@ if __name__ == "__main__":
     parser.add_argument("--epochs",
         "-e",
         help="number of epochs",
-        dest="weights",
+        dest="epochs",
         default=100,
         required=False)
 
