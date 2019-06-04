@@ -269,6 +269,7 @@ if __name__ == "__main__":
         help="number of epochs",
         dest="epochs",
         default=100,
+        type=int,
         required=False)
 
     # read arguments from the command line
