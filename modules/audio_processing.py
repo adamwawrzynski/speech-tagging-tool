@@ -206,7 +206,7 @@ def adjust_clarin_phonemes(path, phonemes_set):
 
                     # create name corresponding to sound file name
                     filename = path
-                    filename = filename.split(".json")[0]
+                    filename = filename.split("_annot.json")[0]
                     filename += ".PHN"
 
                     print(filename)
