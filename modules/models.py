@@ -4,7 +4,7 @@ from tensorflow.python.ops import ctc_ops as ctc
 from keras.layers import TimeDistributed
 from keras.layers import Dropout
 from keras.layers import Dense
-from keras.layers import CuDNNLSTM
+from keras.layers import LSTM
 from keras.layers import Bidirectional
 from keras.layers import GRU
 from keras.layers import Conv1D
@@ -54,7 +54,7 @@ def best_model(num_class):
     x = TimeDistributed(Dense(512, activation='relu'))(x)
     x = Dropout(0.1, name='dropout_4')(x)
 
-    x = Bidirectional(CuDNNLSTM(128, return_sequences=True), merge_mode='sum')(x)
+    x = Bidirectional(LSTM(128, return_sequences=True), merge_mode='sum')(x)
 
     x = TimeDistributed(Dense(512, activation='relu'))(x)
     x = Dropout(0.1, name='dropout_5')(x)

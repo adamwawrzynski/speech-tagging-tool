@@ -76,7 +76,7 @@ else:
     args.framing_function = np.hamming
 
 # load model
-model, test_func = model.best_model(38)
+model, test_func = model.best_model(39)
 
 train.predict_model(model=model,
         model_weights_path="modules/best_model.hd5",
