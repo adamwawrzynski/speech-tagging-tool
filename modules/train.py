@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
-import audio_processing as ap
 import os
-import models as md
 import numpy as np
 import random
 from keras.models import load_model
 from time import time
 from keras.callbacks import TensorBoard
 from keras import backend as K
-
+import modules.models as md
+import modules.audio_processing as ap
 
 def decode_batch(result):
         ''' Return indexes of the maximum probability for each phoneme
