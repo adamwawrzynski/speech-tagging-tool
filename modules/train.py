@@ -47,15 +47,15 @@ def create_transcription(prediction, path, window_width=25, verbose=False):
                                 stop = start
                         else:
                                 if verbose == True:
-                                        print("{}:\t{} sample\t{} sample".format(old, start, stop))
+                                        print("{}:\t{} sample\t{} sample".format(old, int(start), int(stop)))
 
-                                fout.write("{},{},{}\n".format(old, start, stop))
+                                fout.write("{},{},{}\n".format(old, int(start), int(stop)))
                                 start = stop = 0
                                 old = None
                 if verbose == True:
-                        print("{}:\t{} sample\t{} sample".format(old, start, stop))
+                        print("{}:\t{} sample\t{} sample".format(old, int(start), int(stop)))
 
-                fout.write("{},{},{}\n".format(old, start, stop))
+                fout.write("{},{},{}\n".format(old, int(start), int(stop)))
 
 
 def train_model(name,
