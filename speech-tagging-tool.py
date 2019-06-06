@@ -76,14 +76,14 @@ else:
     args.framing_function = np.hamming
 
 # load model
-model, test_func = model.best_model(39)
+model, test_func = model.best_model(38)
 
 train.predict_model(model=model,
-        model_weights_path="modules/best_model.hd5",
+        model_weights_path="modules/polish.weights",
         test_func=test_func,
         audio_path=args.source,
         transcription_path=args.destination,
-        alphabet_path="data/phonemes_timit.txt",
+        alphabet_path="data/phonemes_clarin.txt",
         framing_function=args.framing_function,
         frame_width=args.frame_width,
         frame_imposition=args.frame_imposition,
