@@ -6,6 +6,7 @@ import modules.models as model
 import modules.audio_processing as ap
 import os
 
+
 def CheckExt(choices):
     class Act(argparse.Action):
         def __call__(self,parser,namespace,fname,option_string=None):
@@ -17,6 +18,7 @@ def CheckExt(choices):
                 setattr(namespace,self.dest,fname)
 
     return Act
+
 
 # initiate the parser
 parser = argparse.ArgumentParser()

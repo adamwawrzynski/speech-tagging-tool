@@ -258,9 +258,6 @@ def get_samples_clarin(path, feasible_phonemes):
 
     # extract basename of files and remove duplicates
     filelist = os.listdir(path)
-    # for i in range(0, len(filelist)):
-    #     filelist[i] = os.path.splitext(os.path.basename(filelist[i]))[0]
-    # filelist = list(dict.fromkeys(filelist))
 
     # process files
     for filename in filelist:

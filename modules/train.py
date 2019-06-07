@@ -256,12 +256,12 @@ if __name__ == "__main__":
         required=True)
     parser.add_argument("--alphabet",
         "-a",
-        help="path to alphabet",
+        help="path to alphabet file",
         dest="alphabet",
         required=True)
     parser.add_argument("--weights",
         "-w",
-        help="path to weights",
+        help="path to weights file",
         dest="weights",
         required=True)
     parser.add_argument("--epochs",

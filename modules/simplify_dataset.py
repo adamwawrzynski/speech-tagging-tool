@@ -4,7 +4,7 @@ import argparse
 
 
 def process_file(filename):
-    ''' Simplify .PHN file from 61 to 39 phonemes. '''
+    ''' Simplify TIMIT .PHN file from 61 to 39 phonemes. '''
     with open(filename, "rt") as fin:
         with open(filename+"tmp", "wt") as fout:
                 for line in fin:
@@ -63,48 +63,9 @@ def process_file(filename):
     os.remove(filename)
     os.rename(filename+"tmp", filename)
 
-# this function results in different order in phonemes, so pretrained model
-# won't work
-# def simplify_phonemes_file(filename):
-#     ''' Simplify phonemes.txt file from 61 to 39 phonemes. '''
-#     with open(filename, "rt") as fin:
-#         with open(filename+"tmp", "wt") as fout:
-#                 for line in fin:
-#                     if 'ao' in line or \
-#                         'ax' in line or \
-#                         'ax-h' in line or \
-#                         'ah-h' in line or \
-#                          'ahr' in line or \
-#                          'axr' in line or \
-#                          'hv' in line or \
-#                          'ix' in line or \
-#                          'el' in line or \
-#                          'em' in line or \
-#                          'en' in line or \
-#                          'nx' in line or \
-#                          'eng' in line or \
-#                          'zh' in line or \
-#                          'ux' in line or \
-#                          'q' in line or \
-#                          'pcl' in line or \
-#                          'tcl' in line or \
-#                          'kcl' in line or \
-#                          'bcl' in line or \
-#                          'dcl' in line or \
-#                          'gcl' in line or \
-#                          'pau' in line or \
-#                         'epi' in line:
-#                         pass
-#                     elif 'h#' in line:
-#                         fout.write('sil\n')
-#                     else:
-#                         fout.write(line)
-#     os.remove(filename)
-#     os.rename(filename+"tmp", filename)
-
 
 def simplify_phonemes_file(filename):
-    ''' Simplify phonemes.txt file from 61 to 39 phonemes. '''
+    ''' Simplify TIMIT alphabet file from 61 to 39 phonemes. '''
     with open(filename+"tmp", "wt") as fout:
             fout.write("sh\ng\nl\nah\ndx\nch\nae\nz\nn\ny\neh\nsil\naa\nih\n"+
                 "k\nth\naw\nb\nf\noy\nd\nay\nw\now\np\nt\ner\njh\ns\ney\n"+
@@ -113,7 +74,7 @@ def simplify_phonemes_file(filename):
     os.rename(filename+"tmp", filename)
 
 def simplify_dataset(path):
-    ''' Simplify dataset from 61 to 39 phonemes. '''
+    ''' Simplify TIMIT dataset from 61 to 39 phonemes. '''
     # extract basename of files and remove duplicates
     filelist = os.listdir(path)
     for i in range(0, len(filelist)):
@@ -148,7 +109,7 @@ if __name__ == "__main__":
                         required=True)
     parser.add_argument("--phonemes",
                         "-p",
-                        help="path to feasible phonemes file",
+                        help="path to alphabet file",
                         dest="phonemes",
                     required=True)
 
