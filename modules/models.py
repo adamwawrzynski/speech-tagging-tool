@@ -22,10 +22,12 @@ from keras import backend as K
 
 def ctc_batch_cost(y_true, y_pred, input_length, label_length,
                             ctc_merge_repeated=False):
+    """Computes CTC loss function and returns probability scores."""
+
     label_length = tf.cast(tf.squeeze(label_length, axis=-1), tf.int32)
     input_length = tf.cast(tf.squeeze(input_length, axis=-1), tf.int32)
-    sparse_labels = tf.cast(
-        K.ctc_label_dense_to_sparse(y_true, label_length), tf.int32)
+    sparse_labels = tf.cast(K.ctc_label_dense_to_sparse(y_true, label_length), 
+                            tf.int32)
     y_pred = tf.log(tf.transpose(y_pred, perm=[1, 0, 2]) + epsilon())
     return tf.expand_dims(ctc.ctc_loss(inputs=y_pred,
                                        labels=sparse_labels,
@@ -34,11 +36,24 @@ def ctc_batch_cost(y_true, y_pred, input_length, label_length,
 
 
 def ctc_lambda_func(args):
+    """Returns implementation of CTC loss function."""
+
     y_pred, labels, input_length, label_length = args
     return ctc_batch_cost(labels, y_pred, input_length, label_length)
 
 
 def best_model(num_class):
+    """Creates graph of DNN and returns keras model and predict function.
+
+    It creates graph of neural network with CTC loss function and returns
+    sequence of the most probable phonemes.
+
+    Architecture based on: https://www.cs.toronto.edu/~graves/nn_2005.pdf
+
+    Arguments:
+    num_class - number of predicted classes (number of phonemes in alphabet)
+    """
+
     input_data = Input(shape=(None, 26), name='input')
 
     x = Conv1D(128, 3, strides=1, padding='same', activation='relu',
@@ -83,5 +98,4 @@ def best_model(num_class):
     # the loss calc occurs elsewhere, so use a dummy lambda func for the loss
     model.compile(loss={'ctc': lambda y_true, y_pred: y_pred}, optimizer=adam)
 
-    #return model, model_p, test_func
     return model, test_func

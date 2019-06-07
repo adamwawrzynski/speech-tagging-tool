@@ -9,7 +9,8 @@ import json
 
 
 class Sample(object):
-    ''' Class representing sound signal with tagged phonemes. '''
+    """Represents sound signal with labeled phonemes."""
+
     def __init__(self):
         self.features = None
         self.phonemes = None
@@ -26,7 +27,8 @@ class Sample(object):
 
 
 def get_feasible_phonemes(path):
-    ''' Get feasible phones from file. '''
+    """Returns list of phonemes from alphabet."""
+
     phonemes = {}
     if(os.path.isfile(path)):
         file = open(path)
@@ -39,7 +41,8 @@ def get_feasible_phonemes(path):
 
 
 def get_phonemes_from_file(path):
-    ''' Parse .PHN file and return array of tagged phonemes. '''
+    """Parses .PHN file and returns array of labelled phonemes."""
+
     file = open(path)
     values = np.empty((3))
     for line in file:
@@ -56,7 +59,8 @@ def process_audio(source,
         frame_width=0.025, 
         frame_imposition=0.01,
         framing_function=np.hamming):
-    '''' Transform sound file and calculate MFCC features. '''
+    """Calculates and returns MFCC features and frame width."""
+
     destination = 'tmp.wav'
 
     # transform original file
@@ -92,15 +96,16 @@ def process_audio(source,
 
 
 def convert_phonemes_to_number(dataset, phonemes):
-    ''' Replace phonemes with correspoding number from feasible phonemes
-    dictionary. '''
+    """Encodes phonemes in dataset with indexes from alphabet and returns it."""
+
     for i in dataset:
             i[2] = phonemes[i[2]]
     return dataset
 
 
 def convert_number_to_phoneme(prediction, phonemes):
-    ''' Replace number of correspoding phoneme with phoneme. '''
+    """Decodes phonemes in dataset with indexes from alphabet and returns it."""
+
     result = []
     for i in range(0, len(prediction)):
         for name in phonemes.items():
@@ -110,7 +115,8 @@ def convert_number_to_phoneme(prediction, phonemes):
 
 
 def get_framing_phonemes(dataset, features, step=160):
-    ''' Calculate phoneme of each sound signal frame. '''
+    """Calculates and returns list of phoneme of each sound sample in dataset."""
+
     tmp_dataset = []
     pointer = 0
     for j in dataset:
@@ -122,7 +128,8 @@ def get_framing_phonemes(dataset, features, step=160):
 
 
 def get_framing_phonemes_clarin(dataset, features, step=160):
-    ''' Calculate phoneme of each sound signal frame. '''
+    """Calculates and returns list of phoneme of each sound sample in dataset."""
+
     tmp_dataset = []
     pointer = 0
     for j in dataset:
@@ -135,7 +142,8 @@ def get_framing_phonemes_clarin(dataset, features, step=160):
 
 
 def get_samples(path, feasible_phonemes):
-    ''' Extract dataset from path. '''
+    """Calculates and returns array of Sample objects from path."""
+
     dataset = np.empty(1)
 
     # extract basename of files and remove duplicates
@@ -183,7 +191,8 @@ def get_samples(path, feasible_phonemes):
 
 
 def get_dataset(feasible_phonemes_path, dataset_path):
-    ''' Remove samples where audio duration don't match transcription duration. '''
+    """Removes samples where audio duration doesn't match indexation duration."""
+
     phonemes = get_feasible_phonemes(feasible_phonemes_path)
 
     dataset = get_samples(dataset_path, phonemes)
@@ -198,6 +207,12 @@ def get_dataset(feasible_phonemes_path, dataset_path):
 
 
 def adjust_clarin_phonemes(path, phonemes_set):
+    """Converts .json indexation files to TIMIT-like .PHN files.
+    
+    Our pipeline was developed for TIMIT dataset and it's easier to adjust
+    dataset rather than creating new pipeline of preprocessing.
+    """
+
     with open(path, "r") as read_file:
         data = json.load(read_file)
         if "levels" in data:
@@ -224,6 +239,8 @@ def adjust_clarin_phonemes(path, phonemes_set):
 
 
 def adjust_clarin_dataset(path, phonemes_set):
+    """Recursively adjusts CLARIN dataset."""
+
     # extract basename of files and remove duplicates
     filelist = os.listdir(path)
 
@@ -243,6 +260,8 @@ def adjust_clarin_dataset(path, phonemes_set):
 
 
 def adjust_clarin(dataset_path, phonemes_dict_path):
+    """Adjusts CLARIN dataset to TIMIT structure and writes alphabet phonemes."""
+
     phonemes_set = {'sil'}
     phonemes_set = adjust_clarin_dataset(dataset_path, phonemes_set)
 
@@ -253,7 +272,8 @@ def adjust_clarin(dataset_path, phonemes_dict_path):
 
 
 def get_samples_clarin(path, feasible_phonemes):
-    ''' Extract dataset from path. '''
+    """Calculates and returns array of Sample objects from path."""
+
     dataset = np.empty(1)
 
     # extract basename of files and remove duplicates
@@ -306,7 +326,8 @@ def get_samples_clarin(path, feasible_phonemes):
 
 
 def get_dataset_clarin(feasible_phonemes_path, dataset_path):
-    ''' Remove samples where audio duration don't match transcription duration. '''
+    """Removes samples where audio duration doesn't match indexation duration."""
+
     phonemes = get_feasible_phonemes(feasible_phonemes_path)
 
     dataset = get_samples_clarin(dataset_path, phonemes)

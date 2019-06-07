@@ -8,6 +8,8 @@ import os
 
 
 def CheckExt(choices):
+    """Checks if file has valid extension and return argparse.Action object."""
+
     class Act(argparse.Action):
         def __call__(self,parser,namespace,fname,option_string=None):
             ext = os.path.splitext(fname)[1][1:]

@@ -4,7 +4,8 @@ import argparse
 
 
 def process_file(filename):
-    ''' Simplify TIMIT .PHN file from 61 to 39 phonemes. '''
+    """Simplify TIMIT .PHN file from 61 to 39 phonemes."""
+
     with open(filename, "rt") as fin:
         with open(filename+"tmp", "wt") as fout:
                 for line in fin:
@@ -65,7 +66,8 @@ def process_file(filename):
 
 
 def simplify_phonemes_file(filename):
-    ''' Simplify TIMIT alphabet file from 61 to 39 phonemes. '''
+    """Simplify TIMIT alphabet file from 61 to 39 phonemes."""
+
     with open(filename+"tmp", "wt") as fout:
             fout.write("sh\ng\nl\nah\ndx\nch\nae\nz\nn\ny\neh\nsil\naa\nih\n"+
                 "k\nth\naw\nb\nf\noy\nd\nay\nw\now\np\nt\ner\njh\ns\ney\n"+
@@ -74,7 +76,8 @@ def simplify_phonemes_file(filename):
     os.rename(filename+"tmp", filename)
 
 def simplify_dataset(path):
-    ''' Simplify TIMIT dataset from 61 to 39 phonemes. '''
+    """Simplify TIMIT dataset from 61 to 39 phonemes."""
+
     # extract basename of files and remove duplicates
     filelist = os.listdir(path)
     for i in range(0, len(filelist)):
