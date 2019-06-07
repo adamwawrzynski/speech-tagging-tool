@@ -171,10 +171,19 @@ def get_samples(path, feasible_phonemes):
 
         # otherwise process files inside directory
         else:
-            features, _ = process_audio(path + '/' + filename + ".WAV")
+            if os.path.isfile((path + '/' + filename + ".WAV")):
+                features, _ = process_audio(path + '/' + filename + ".WAV")
+            else:
+                print("File {} doesn't exist.".format(path + '/' + filename + ".WAV"))
+                exit()
 
             sample.set_features(features)
-            tmp = get_phonemes_from_file(path + '/' + filename + ".PHN")
+
+            if os.path.isfile(path + '/' + filename + ".PHN"):
+                tmp = get_phonemes_from_file(path + '/' + filename + ".PHN")
+            else:
+                print("File {} doesn't exist.".format(path + '/' + filename + ".PHN"))
+                exit()
 
             # convert phoneme from ASCII to number representing class
             tmp = convert_phonemes_to_number(tmp, feasible_phonemes)
@@ -304,10 +313,19 @@ def get_samples_clarin(path, feasible_phonemes):
                 new_sample = True
                 basename = filename.split(".")[0]
 
-                features, _ = process_audio(path + '/' + basename + ".wav")
+                if os.path.isfile((path + '/' + basename + ".wav")):
+                    features, _ = process_audio(path + '/' + basename + ".wav")
+                else:
+                    print("File {} doesn't exist.".format(path + '/' + basename + ".wav"))
+                    exit()
 
                 sample.set_features(features)
-                tmp = get_phonemes_from_file(path + '/' + basename + ".PHN")
+
+                if os.path.isfile(path + '/' + filename + ".PHN"):
+                    tmp = get_phonemes_from_file(path + '/' + filename + ".PHN")
+                else:
+                    print("File {} doesn't exist.".format(path + '/' + filename + ".PHN"))
+                    exit()
 
                 # convert phoneme from ASCII to number representing class
                 tmp = convert_phonemes_to_number(tmp, feasible_phonemes)

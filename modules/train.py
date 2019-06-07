@@ -88,13 +88,25 @@ def train_model(name,
                 alphabet_path,
                 dataset_path,
                 restore,
+                language,
                 tensorboard=False,
                 verbose=False):
     """Trains model and saves pretrained weights to file."""
 
     # load alphabet and dataset from given paths
-    # dataset = ap.get_dataset(alphabet_path, dataset_path)
-    dataset = ap.get_dataset_clarin(alphabet_path, dataset_path)
+    # load alphabet and dataset from given paths
+    if language == "polish":
+        dataset = ap.get_dataset_clarin(alphabet_path, dataset_path)
+    elif language == "english":
+        dataset = ap.get_dataset(alphabet_path, dataset_path)
+    else:
+        print("Lanugage {} is not supported.".format(language))
+        exit()
+
+    if not dataset:
+        print("Dataset is empty.")
+        print("Check your dataset path and selected language.")
+        exit()
 
     # load model to retrain
     if restore == True:
@@ -183,12 +195,24 @@ def evaluate_model(model,
                 test_func,
                 alphabet_path,
                 dataset_path,
+                language,
                 verbose=False):
     """Checks and prints accuracy of pretrained model on given dataset."""
 
     # load alphabet and dataset from given paths
-    # dataset = ap.get_dataset(alphabet_path, dataset_path)
-    dataset = ap.get_dataset_clarin(alphabet_path, dataset_path)
+    if language == "polish":
+        dataset = ap.get_dataset_clarin(alphabet_path, dataset_path)
+    elif language == "english":
+        dataset = ap.get_dataset(alphabet_path, dataset_path)
+    else:
+        print("Lanugage {} is not supported.".format(language))
+        exit()
+
+    if not dataset:
+        print("Dataset is empty.")
+        print("Check your dataset path and selected language.")
+        exit()
+
     phonemes = ap.get_feasible_phonemes(alphabet_path)
 
     # load model to retrain
