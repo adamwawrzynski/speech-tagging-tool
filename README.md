@@ -2,8 +2,8 @@
 
 ## About
 
-Tool for labelling phonemes with start and stop timestamps based on
-neural network's for English and Polish.
+This repository contains tool for labelling phonemes with start and stop
+timestamps for English and Polish speech.
 
 * We acquired ~75% accuracy on TIMIT dataset after 15 epochs of training
 * We acquired ~80% accuracy on CLARIN-EMU dataset after 15 epochs of training[*](#notes)
@@ -41,7 +41,7 @@ pip3 install -r requirements.txt
 Or you can run *setup.sh* script with the following command:
 
 ```bash
-sudo setup.sh
+sudo ./setup.sh
 ```
 
 ### Usage of tool
