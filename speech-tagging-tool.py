@@ -40,26 +40,32 @@ parser.add_argument("--option",
                     "-o",
                     help="defines whether to return phonemes (-P) or words (-W) tagging",
                     dest="option",
-                    default='-P',
+                    default="-P",
                     required=False)
 parser.add_argument("--frame_width",
                     "-w",
                     help="defines width of window in seconds",
                     dest="frame_width",
-                    default='0.025',
+                    default="0.025",
                     type=float,
                     required=False)
 parser.add_argument("--frame_imposition",
                     "-i",
                     help="defines width of window impositions on both sides in seconds",
                     dest="frame_imposition",
-                    default='0.01',
+                    default="0.01",
                     type=float,
                     required=False)
 parser.add_argument("--framing_function",
                     "-f", help="defines framing function",
                     dest="framing_function",
-                    default='hamming',
+                    default="hamming",
+                    required=False)
+parser.add_argument("--lanugage",
+                    "-l",
+                    help="defines language of speech",
+                    dest="language",
+                    default="polish",
                     required=False)
 
 # read arguments from the command line
@@ -77,16 +83,38 @@ elif 'bartlett' in args.framing_function:
 else:
     args.framing_function = np.hamming
 
-# load model
-model, test_func = model.best_model(38)
+if args.language == "polish":
 
-train.predict_model(model=model,
-        model_weights_path="modules/polish.weights",
-        test_func=test_func,
-        audio_path=args.source,
-        transcription_path=args.destination,
-        alphabet_path="data/phonemes_clarin.txt",
-        framing_function=args.framing_function,
-        frame_width=args.frame_width,
-        frame_imposition=args.frame_imposition,
-        verbose=True)
+    # load model
+    model, test_func = model.best_model(38)
+
+    train.predict_model(model=model,
+            model_weights_path="modules/polish.weights",
+            test_func=test_func,
+            audio_path=args.source,
+            transcription_path=args.destination,
+            alphabet_path="data/phonemes_clarin.txt",
+            framing_function=args.framing_function,
+            frame_width=args.frame_width,
+            frame_imposition=args.frame_imposition,
+            verbose=True)
+
+elif args.language == "english":
+
+    # load model
+    model, test_func = model.best_model(39)
+
+    train.predict_model(model=model,
+            model_weights_path="modules/english.weights",
+            test_func=test_func,
+            audio_path=args.source,
+            transcription_path=args.destination,
+            alphabet_path="data/phonemes_timit.txt",
+            framing_function=args.framing_function,
+            frame_width=args.frame_width,
+            frame_imposition=args.frame_imposition,
+            verbose=True)
+
+else:
+    print("Language: {} is not supported.".format(args.language))
+    exit()
