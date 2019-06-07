@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+
+__version__ = '1.0'
+__author__ = 'Wawrzyński Adam, Szypryt Kamil'
+
 import tensorflow as tf
 from keras.backend.common import epsilon
 from tensorflow.python.ops import ctc_ops as ctc

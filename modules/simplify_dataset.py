@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+
+__version__ = '1.0'
+__author__ = 'Wawrzyński Adam, Szypryt Kamil'
+
 import os
 import sys
 import argparse

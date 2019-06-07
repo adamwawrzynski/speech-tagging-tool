@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+
+__version__ = '1.0'
+__author__ = 'Wawrzyński Adam, Szypryt Kamil'
+
 from python_speech_features import mfcc
 from python_speech_features import logfbank
 from python_speech_features import delta
