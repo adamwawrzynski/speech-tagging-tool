@@ -91,7 +91,7 @@ if args.language == "polish":
     model, test_func = model.best_model(38)
 
     train.predict_model(model=model,
-            model_weights_path="modules/polish.weights",
+            model_weights_path="weights/polish.weights",
             test_func=test_func,
             audio_path=args.source,
             transcription_path=args.destination,
@@ -107,7 +107,7 @@ elif args.language == "english":
     model, test_func = model.best_model(39)
 
     train.predict_model(model=model,
-            model_weights_path="modules/english.weights",
+            model_weights_path="weights/english.weights",
             test_func=test_func,
             audio_path=args.source,
             transcription_path=args.destination,
